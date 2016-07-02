@@ -9,9 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.template.response import TemplateResponse
 from django.views.generic import View, ListView, CreateView, UpdateView
 from django.http import HttpResponse, HttpResponseRedirect
-from zer0Blog.settings import MEDIA_ROOT, MEDIA_URL, image_type
+from xbar.settings import MEDIA_ROOT, MEDIA_URL, image_type
 
-from zer0Blog.settings import PERNUM
+from xbar.settings import PERNUM
 from blog.pagination import paginator_tool
 from .models import Post, Catalogue, Carousel, User, EDITOR
 from thumbnail import ThumbnailTool

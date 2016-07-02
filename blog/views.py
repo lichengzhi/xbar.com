@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 
 from django.views.generic import View, DetailView, ListView
 from django.db.models import Count
-from zer0Blog.settings import PERNUM
+from xbar.settings import PERNUM
 from tagging.models import TaggedItem
 
 from blog.pagination import paginator_tool

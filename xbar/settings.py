@@ -53,7 +53,7 @@ MIDDLEWARE_CLASSES = [
     'blog.middleware.admin_middleware.AdminAuthenticationMiddleware',
 ]
 
-ROOT_URLCONF = 'zer0Blog.urls'
+ROOT_URLCONF = 'xbar.urls'
 
 TEMPLATES = [
     {
@@ -71,25 +71,28 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'zer0Blog.wsgi.application'
+WSGI_APPLICATION = 'xbar.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'zer0Blog',
-        'USER': 'lxtalx',
-        'PASSWORD': 'lxtalx',
-        'HOST': '10.0.3.13',
+        'ENGINE': 'django.db.backends.sqlite3',
+
+
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'USER': '',
+        'PASSWORD': '',
+
+        'HOST': '',
         # 'USER': 'root',
         # 'PASSWORD': 'root',
         # 'HOST': '10.0.3.12',
         # 'USER': 'root',
         # 'PASSWORD': 'lxtalx',
         # 'HOST': '127.0.0.1',
-        'PORT': '3306'
+
+        #'PORT': ''
     }
 }
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
