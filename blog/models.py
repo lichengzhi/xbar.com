@@ -7,10 +7,15 @@ from tagging.models import Tag
 from tagging.fields import TagField
 from tagging.registry import register
 
-STATUS = {
+POST_STATUS = {
         0: u'草稿',
         1: u'发布',
         2: u'删除',
+}
+CATALOGUE_STATUS = {
+        0: u'ENABLE',
+        1: u'DISABLE',
+        
 }
 
 EDITOR = [
@@ -38,15 +43,22 @@ class User(AbstractUser):
     # editor_choice = models.ForeignKey(Editor, null=True, blank=True, default="tinyMCE")
     editor_choice = models.CharField(max_length=20, default='tinyMCE')
     avatar_path = models.ImageField(upload_to="/avatar", default="/static/image/avatar_default.jpg")
+    gold = models.IntegerField(editable=True, default=0)
+    diamond = models.IntegerField(editable=True, default=0)
+	
+	
 
     def __str__(self):
         return self.name
 
 
 class Catalogue(models.Model):
-    name = models.CharField(max_length=20, primary_key=True)
-
-    def __str__(self):
+   name = models.CharField(max_length=20, primary_key=True)
+   owner = models.ForeignKey(settings.AUTH_USER_MODEL)	
+   status = models.SmallIntegerField(default=1, choices=CATALOGUE_STATUS.items())  # 0为草稿，1为发布，2为删除
+	
+	
+   def __str__(self):
         return self.name
 
 
@@ -59,7 +71,7 @@ class Post(models.Model):
     catalogue = models.ForeignKey(Catalogue)
     tag = TagField_Mine()
     view_count = models.IntegerField(editable=False, default=0)
-    status = models.SmallIntegerField(default=0, choices=STATUS.items())  # 0为草稿，1为发布，2为删除
+    status = models.SmallIntegerField(default=0, choices=POST_STATUS.items())  # 0为草稿，1为发布，2为删除
     # editor_choice = models.ForeignKey(Editor)
     editor_choice = models.CharField(max_length=20)
 

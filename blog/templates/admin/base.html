@@ -161,6 +161,7 @@
 
             {% nav /admin/ "博客管理" "icon-briefcase" %}
             {% ifequal user.is_superuser 1 %}
+			    {% nav /admin/catalogue "板块管理" "icon-money" %}
                 {% nav /admin/carousel "轮播管理" "icon-refresh" %}
 {#              {% nav /admin/repository "知识库管理" "icon-money" %}#}
                 {% nav /admin/userset "设置" "icon-cogs" %}

@@ -435,7 +435,23 @@ class UserSetView(ListView):
         context['page_range'] = page_range
         context['objects'] = objects
         return context
+		
+		
+class CatalogueView(ListView):
+    template_name = 'admin/catalogue_admin.html'
+    context_object_name = 'catalogue_list'
 
+    def get_queryset(self):
+        catalogue_list = Catalogue.objects.all()
+        return catalogue_list
+
+    def get_context_data(self, **kwargs):
+        context = super(CatalogueView, self).get_context_data(**kwargs)
+        page = self.kwargs.get('page') or self.request.GET.get('page') or 1
+        objects, page_range = paginator_tool(pages=page, queryset=self.object_list, display_amount=PERNUM)
+        context['page_range'] = page_range
+        context['objects'] = objects
+        return context
 
 class NewUserView(CreateView):
     template_name = 'admin/userset_new.html'
@@ -463,3 +479,27 @@ class AddUser(View):
         user_obj.save()
 
         return HttpResponseRedirect('/admin/userset')
+		
+class NewCatalogueView(CreateView):
+    template_name = 'admin/catalogue_new.html'
+    model = Catalogue
+    fields = ['name']
+
+
+class AddCatalogue(View):
+    def post(self, request):
+        cataloguename = request.POST.get("cataloguename", "")
+        password = request.POST.get("password", "")
+        
+
+        user_obj = Catalogue.objects.create(
+            name="".join(cataloguename),
+           
+        )
+
+        
+      
+
+        user_obj.save()
+
+        return HttpResponseRedirect('/admin/catalogue')
