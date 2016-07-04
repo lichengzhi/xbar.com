@@ -13,10 +13,12 @@
 
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li><a href="/"><span class="glyphicon glyphicon-leaf"></span> 博客</a></li>
-                <li><a href="#">Page 1</a></li>
-                <li><a href="#">Page 2</a></li> 
-                <li><a href="#">Page 3</a></li> 
+			 {% if catalogue_list %}
+			 {% for catalogue in catalogue_list %}
+                 <li><a href="/category/{{ catalogue.name }}"><span class="glyphicon glyphicon-leaf"></span> {{ catalogue.name }}</a></li>
+             {% endfor %}
+			 {% endif %}
+              
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>

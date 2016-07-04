@@ -43,8 +43,8 @@ class User(AbstractUser):
     # editor_choice = models.ForeignKey(Editor, null=True, blank=True, default="tinyMCE")
     editor_choice = models.CharField(max_length=20, default='tinyMCE')
     avatar_path = models.ImageField(upload_to="/avatar", default="/static/image/avatar_default.jpg")
-    gold = models.IntegerField(editable=True, default=0)
-    diamond = models.IntegerField(editable=True, default=0)
+    num_gold = models.IntegerField(editable=True, default=0)
+    num_diamond = models.IntegerField(editable=True, default=0)
 	
 	
 
@@ -54,7 +54,7 @@ class User(AbstractUser):
 
 class Catalogue(models.Model):
    name = models.CharField(max_length=20, primary_key=True)
-   owner = models.ForeignKey(settings.AUTH_USER_MODEL)	
+   owner = models.CharField(max_length=20, primary_key=True)
    status = models.SmallIntegerField(default=1, choices=CATALOGUE_STATUS.items())  # 0为草稿，1为发布，2为删除
 	
 	
@@ -74,6 +74,10 @@ class Post(models.Model):
     status = models.SmallIntegerField(default=0, choices=POST_STATUS.items())  # 0为草稿，1为发布，2为删除
     # editor_choice = models.ForeignKey(Editor)
     editor_choice = models.CharField(max_length=20)
+    price = models.IntegerField(editable=True,default=0) 
+    likes = models.IntegerField(editable=False,default=0)
+    #dislikes = models.IntegerField(editable=False,default=0)
+	
 
     def __str__(self):
         return self.title

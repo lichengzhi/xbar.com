@@ -489,11 +489,12 @@ class NewCatalogueView(CreateView):
 class AddCatalogue(View):
     def post(self, request):
         cataloguename = request.POST.get("cataloguename", "")
-        password = request.POST.get("password", "")
+        owner = request.POST.get("owner", "")
         
 
         user_obj = Catalogue.objects.create(
             name="".join(cataloguename),
+            owner = "".join(owner),
            
         )
 

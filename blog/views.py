@@ -41,7 +41,7 @@ class IndexView(BaseMixin, ListView):
         context['carousel_page_list'] = Carousel.objects.all()
         context['page_range'] = page_range
         context['objects'] = objects
-
+        context['catalogue_list'] = Catalogue.objects.all()
         return context
 
 
@@ -55,6 +55,7 @@ class PostView(BaseMixin, DetailView):
         pkey = self.kwargs.get("pk")
         posts = self.queryset.get(pk=pkey)
         posts.view_count += 1
+        posts.price +=10
         posts.save()
         return super(PostView, self).get(request, *args, **kwargs)
 
@@ -241,8 +242,8 @@ class CategoryListView(BaseMixin, ListView):
 
     def get_queryset(self):
         slug_key = self.kwargs.get("slug")
-        catalogue_key = Catalogue.objects.get(pk=slug_key)
-        post_list = Post.objects.filter(catalogue_id=catalogue_key)
+        catalogue_key = Catalogue.objects.get(name=slug_key)
+        post_list = Post.objects.filter(catalogue=catalogue_key)
         return post_list
 
     def get_context_data(self, **kwargs):
@@ -252,6 +253,7 @@ class CategoryListView(BaseMixin, ListView):
         context['carousel_page_list'] = Carousel.objects.all()
         context['page_range'] = page_range
         context['objects'] = objects
+        context['catalogue_list'] = Catalogue.objects.all()
         return context
 
 
