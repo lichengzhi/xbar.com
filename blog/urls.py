@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from blog.views import IndexView, PostView, CommentView, RepositoryView, RepositoryDetailView, TagListView, \
-    CategoryListView, AuthorPostListView, CommentDeleteView
+    CategoryListView, AuthorPostListView, CommentDeleteView,PermissionCheckView,PermissionGrantView
 
 urlpatterns = [
     url(r'^$', IndexView.as_view()),
@@ -12,5 +12,7 @@ urlpatterns = [
     url(r'^repository/(?P<pk>[0-9]+)$', RepositoryDetailView.as_view()),
     url(r'^tag/(?P<slug>[\w\u4e00-\u9fa5]+)$', TagListView.as_view()),
     url(r'^category/(?P<slug>[\w\u4e00-\u9fa5]+)$', CategoryListView.as_view()),
-    url(r'^author/(?P<pk>[0-9]+)$', AuthorPostListView.as_view())
+    url(r'^author/(?P<pk>[0-9]+)$', AuthorPostListView.as_view()),
+    url(r'^permissioncheck/(?P<pk>[0-9]+)$', PermissionCheckView.as_view()),
+	url(r'^permissiongrant/(?P<pk>[0-9]+)$', PermissionGrantView.as_view())
 ]

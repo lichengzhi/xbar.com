@@ -5,7 +5,7 @@ from django.db.models import Q
 from collections import OrderedDict
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
-
+from django.http import HttpResponseRedirect
 from django.views.generic import View, DetailView, ListView
 from django.db.models import Count
 from xbar.settings import PERNUM
@@ -54,9 +54,16 @@ class PostView(BaseMixin, DetailView):
     def get(self, request, *args, **kwargs):
         pkey = self.kwargs.get("pk")
         posts = self.queryset.get(pk=pkey)
+        is_viewer = posts.viewers.filter(name=request.user.name).exists()
+        if not is_viewer:
+			return HttpResponseRedirect('/permissioncheck/%i' %posts.id)
+		
+		
         posts.view_count += 1
         posts.price +=10
         posts.save()
+        print request.user.name
+        
         return super(PostView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -89,7 +96,39 @@ class PostView(BaseMixin, DetailView):
             every_child_list = []
         return comment_dict
 
+class PermissionCheckView(BaseMixin, DetailView):
+    template_name = 'blog/post_auth.html'
+    context_object_name = 'post'
+    queryset = Post.objects.filter(status=1)
 
+    # 用于记录文章的阅读量，每次请求添加一次阅读量
+    def get(self, request, *args, **kwargs):
+        pkey = self.kwargs.get("pk")
+        posts = self.queryset.get(pk=pkey)
+        return super(PermissionCheckView, self).get(request, *args, **kwargs)
+		
+    def get_context_data(self, **kwargs):
+        context = super(PermissionCheckView, self).get_context_data(**kwargs)
+        pkey = self.kwargs.get("pk")
+
+        
+        return context	
+		
+class PermissionGrantView(BaseMixin, DetailView):
+    template_name = 'blog/post_auth.html'
+    context_object_name = 'post'
+    queryset = Post.objects.filter(status=1)
+
+    # 用于记录文章的阅读量，每次请求添加一次阅读量
+    def post(self, request, *args, **kwargs):
+        pkey = self.kwargs.get("pk")
+        posts = self.queryset.get(pk=pkey)
+        return  HttpResponseRedirect('/')
+		
+  
+
+        
+        			
 class CommentView(View):
     def post(self, request, *args, **kwargs):
         # 获取当前用户

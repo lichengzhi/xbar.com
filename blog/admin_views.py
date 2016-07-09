@@ -211,6 +211,7 @@ class AddPost(View):
             catalogue=catalogue_foreignkey,
             status=action,
             editor_choice=editor_choice,
+			viewers=user,
         )
 
         post_obj.update_tags(tags)

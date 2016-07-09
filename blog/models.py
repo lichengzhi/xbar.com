@@ -54,7 +54,7 @@ class User(AbstractUser):
 
 class Catalogue(models.Model):
    name = models.CharField(max_length=20, primary_key=True)
-   owner = models.CharField(max_length=20, primary_key=True)
+   owner = models.CharField(max_length=20)
    status = models.SmallIntegerField(default=1, choices=CATALOGUE_STATUS.items())  # 0为草稿，1为发布，2为删除
 	
 	
@@ -66,7 +66,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     publish_time = models.DateTimeField(auto_now_add=True)  # 第一次保存时自动添加时间
     modify_time = models.DateTimeField(auto_now_add=True)  # 每次保存自动更新时间
-    author = models.ForeignKey(settings.AUTH_USER_MODEL)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='author')
     content = models.TextField()
     catalogue = models.ForeignKey(Catalogue)
     tag = TagField_Mine()
@@ -76,9 +76,9 @@ class Post(models.Model):
     editor_choice = models.CharField(max_length=20)
     price = models.IntegerField(editable=True,default=0) 
     likes = models.IntegerField(editable=False,default=0)
-    #dislikes = models.IntegerField(editable=False,default=0)
-	
-
+    dislikes = models.IntegerField(editable=False,default=0)
+    viewers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='viewers')
+    score = models.IntegerField(editable=False,default=0)
     def __str__(self):
         return self.title
 
