@@ -55,6 +55,8 @@ class PostView(BaseMixin, DetailView):
         pkey = self.kwargs.get("pk")
         posts = self.queryset.get(pk=pkey)
         is_viewer = posts.viewers.filter(name=request.user.name).exists()
+        print posts.viewers.filter(name=request.user.name)
+        print posts.viewers.all()
         if not is_viewer:
 			return HttpResponseRedirect('/permissioncheck/%i' %posts.id)
 		
@@ -62,7 +64,7 @@ class PostView(BaseMixin, DetailView):
         posts.view_count += 1
         posts.price +=10
         posts.save()
-        print request.user.name
+        
         
         return super(PostView, self).get(request, *args, **kwargs)
 
@@ -115,15 +117,16 @@ class PermissionCheckView(BaseMixin, DetailView):
         return context	
 		
 class PermissionGrantView(BaseMixin, DetailView):
-    template_name = 'blog/post_auth.html'
-    context_object_name = 'post'
+   
     queryset = Post.objects.filter(status=1)
 
     # 用于记录文章的阅读量，每次请求添加一次阅读量
     def post(self, request, *args, **kwargs):
+        user = request.user
         pkey = self.kwargs.get("pk")
         posts = self.queryset.get(pk=pkey)
-        return  HttpResponseRedirect('/')
+        posts.viewers.add(user)
+        return  HttpResponseRedirect('/post/%i' %posts.id)
 		
   
 

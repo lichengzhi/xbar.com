@@ -17,7 +17,12 @@ CATALOGUE_STATUS = {
         1: u'DISABLE',
         
 }
-
+ANSW_TYPE = {
+        0: u'public',
+        1: u'private',
+        2: u'instant',
+        
+}
 EDITOR = [
     u'tinyMCE',
     u'MarkDown',
@@ -66,7 +71,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     publish_time = models.DateTimeField(auto_now_add=True)  # 第一次保存时自动添加时间
     modify_time = models.DateTimeField(auto_now_add=True)  # 每次保存自动更新时间
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='author')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='post_author')
     content = models.TextField()
     catalogue = models.ForeignKey(Catalogue)
     tag = TagField_Mine()
@@ -77,7 +82,7 @@ class Post(models.Model):
     price = models.IntegerField(editable=True,default=0) 
     likes = models.IntegerField(editable=False,default=0)
     dislikes = models.IntegerField(editable=False,default=0)
-    viewers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='viewers')
+    viewers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_viewers')
     score = models.IntegerField(editable=False,default=0)
     def __str__(self):
         return self.title
@@ -92,11 +97,72 @@ class Post(models.Model):
 
     def remove_tags(self):
         Tag.objects.update_tags(self, None)
+    def get_absolute_url(self):
+        return "/post/%i/" % self.id
 
     class Meta:
         ordering = ['-modify_time']
 
+class Question(models.Model):
+    title = models.CharField(max_length=100)
+    publish_time = models.DateTimeField(auto_now_add=True)  # 第一次保存时自动添加时间
+    modify_time = models.DateTimeField(auto_now_add=True)  # 每次保存自动更新时间
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='question_author')
+    content = models.TextField()
+    catalogue = models.ForeignKey(Catalogue)
+    tag = TagField_Mine()
+    view_count = models.IntegerField(editable=False, default=0)
+    status = models.SmallIntegerField(default=0, choices=POST_STATUS.items())  # 0为草稿，1为发布，2为删除
+    # editor_choice = models.ForeignKey(Editor)
+    editor_choice = models.CharField(max_length=20)
+    price = models.IntegerField(editable=True,default=0) 
+    likes = models.IntegerField(editable=False,default=0)
+    dislikes = models.IntegerField(editable=False,default=0)
+    viewers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='question_viewers')
+    score = models.IntegerField(editable=False,default=0)
+    def __str__(self):
+        return self.title
 
+    def get_tags(self):
+        return Tag.objects.get_for_object(self)
+
+    def update_tags(self, tag_name):
+        # 把list转为string
+        tag_str = "".join(tag_name)
+        Tag.objects.update_tags(self, tag_str)
+
+    def remove_tags(self):
+        Tag.objects.update_tags(self, None)
+    def get_absolute_url(self):
+        return "/post/%i/" % self.id
+
+    class Meta:
+        ordering = ['-modify_time']
+        
+        
+class Answer(models.Model):
+    
+    publish_time = models.DateTimeField(auto_now_add=True)  # 第一次保存时自动添加时间
+    modify_time = models.DateTimeField(auto_now_add=True)  # 每次保存自动更新时间
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='answer_author')
+    question = models.ForeignKey(Question)
+    content = models.TextField()
+    catalogue = models.ForeignKey(Catalogue)
+    status = models.SmallIntegerField(default=0, choices=POST_STATUS.items())  # 0为草稿，1为发布，2为删除
+    type = models.SmallIntegerField(default=0, choices=ANSW_TYPE.items())  
+    # editor_choice = models.ForeignKey(Editor)
+    editor_choice = models.CharField(max_length=20)
+    
+    score = models.IntegerField(editable=False,default=0)
+  
+ 
+    def get_absolute_url(self):
+        return "/post/%i/" % self.id
+
+    class Meta:
+        ordering = ['-modify_time']
+        
+        
 class Comment(models.Model):
     post = models.ForeignKey(Post)
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
